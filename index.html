@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="de">
 <head>
@@ -293,6 +292,7 @@
     ul{ margin: 10px 0 0; padding-left: 18px; color: var(--muted); }
     li{ margin: 6px 0; }
 
+    /* Image blocks */
     .imgbox{
       border-radius: 16px;
       border: 1px solid rgba(255,255,255,.12);
@@ -307,6 +307,23 @@
       padding: 18px;
       text-align:center;
       color: rgba(255,255,255,.72);
+      overflow:hidden;
+    }
+    .imgbox img{
+      width: 100%;
+      height: 100%;
+      max-height: 360px;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.10);
+      box-shadow: 0 18px 40px rgba(0,0,0,.35);
+      background: rgba(0,0,0,.15);
+    }
+    .imgcap{
+      margin-top: 10px;
+      font-size: 12px;
+      color: rgba(255,255,255,.65);
+      text-align:center;
     }
 
     /* Footer */
@@ -344,7 +361,7 @@
 
     .modal-card{
       position: relative;
-      width: min(720px, calc(100% - 32px));
+      width: min(760px, calc(100% - 32px));
       margin: 7vh auto;
       padding: 18px;
       border-radius: 18px;
@@ -379,30 +396,68 @@
       margin-top: 12px;
     }
 
-    /* ===== Ergebnis-Balken ===== */
-    .barrow{
+    /* Pie layout */
+    .pie-wrap{
       display:grid;
-      grid-template-columns: 64px 1fr 90px;
+      grid-template-columns: 300px 1fr;
+      gap: 14px;
       align-items:center;
-      gap: 10px;
-      margin: 10px 0;
     }
-    .barlabel{ color: rgba(255,255,255,.78); font-size: 13px; }
-    .bartrack{
-      height: 14px;
-      border-radius: 999px;
-      background: rgba(0,0,0,.22);
+    .pie-card{
+      background: rgba(0,0,0,.18);
       border: 1px solid rgba(255,255,255,.10);
+      border-radius: 14px;
+      padding: 12px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+    canvas{ max-width: 100%; height:auto; }
+
+    .legend{
+      background: rgba(0,0,0,.18);
+      border: 1px solid rgba(255,255,255,.10);
+      border-radius: 14px;
+      padding: 12px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .legend-row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 10px;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+    .legend-row:last-child{ border-bottom:none; }
+    .legend-left{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      min-width: 0;
+    }
+    .swatch{
+      width: 14px;
+      height: 14px;
+      border-radius: 4px;
+      border: 1px solid rgba(255,255,255,.18);
+      flex: 0 0 auto;
+    }
+    .legend-label{
+      color: rgba(255,255,255,.82);
+      font-weight: 700;
+      font-size: 13px;
+      white-space: nowrap;
       overflow:hidden;
+      text-overflow: ellipsis;
     }
-    .barfill{
-      height: 100%;
-      width: 0%;
-      border-radius: 999px;
-      background: linear-gradient(90deg, rgba(124,58,237,.95), rgba(34,197,94,.75));
-      transition: width .25s ease;
+    .legend-val{
+      color: rgba(255,255,255,.72);
+      font-size: 13px;
+      text-align:right;
+      white-space: nowrap;
     }
-    .barvalue{ text-align:right; color: rgba(255,255,255,.75); font-size: 13px; }
 
     /* Responsive */
     @media (max-width: 860px){
@@ -412,6 +467,8 @@
       .nav{ padding: 12px 16px; }
       .container{ padding: 16px; }
       .modal-card{ margin: 10vh auto; }
+      .pie-wrap{ grid-template-columns: 1fr; }
+      .pie-card{ justify-content:flex-start; }
     }
 
     /* Reduced motion */
@@ -425,8 +482,8 @@
   <header>
     <div class="nav">
       <div class="brand">
-        <!-- Logo-Datei: logo.jpg (im gleichen Ordner wie index.html) -->
-        <img class="logo" src="logo.jpg" alt="Logo" onerror="this.style.display='none'; document.getElementById('logoFallback').style.display='flex';" />
+        <!-- Logo-Datei: logo_digi.jpg (im gleichen Ordner wie index.html) -->
+        <img class="logo" src="logo_digi.jpg" alt="Logo" onerror="this.style.display='none'; document.getElementById('logoFallback').style.display='flex';" />
         <div id="logoFallback" class="logo" style="display:none; align-items:center; justify-content:center; font-size:12px; color:rgba(255,255,255,.7);">
           Logo
         </div>
@@ -441,8 +498,7 @@
         <a class="pill" href="#grundlagen">Grundlagen</a>
         <a class="pill" href="#alltag">Alltag</a>
         <a class="pill" href="#chancenrisiken">Chancen & Risiken</a>
-        <!-- data-open-survey sorgt dafür, dass IMMER das Pop-up aufgeht -->
-        <a class="btn btn-primary" data-open-survey href="#">📋 Umfrage</a>
+        <a class="btn btn-primary" data-open-survey href="#">🗳️ Umfrage</a>
       </div>
     </div>
   </header>
@@ -466,7 +522,7 @@
           </div>
 
           <div class="cta-row">
-            <a class="btn btn-primary" data-open-survey href="#">📋 Umfrage im Pop-up öffnen</a>
+            <a class="btn btn-primary" data-open-survey href="#">🗳️ Umfrage im Pop-up öffnen</a>
             <a class="btn btn-ghost" href="#grundlagen">🔎 Direkt zu den Inhalten</a>
           </div>
 
@@ -481,7 +537,7 @@
             <h3 class="side-title">Was ihr hier findet</h3>
             <p class="side-text">
               Definitionen, Beispiele aus dem Alltag (Supermarkt, Einkaufs-Apps, Online-Banking),
-              plus eine kurze Pro/Contra-Einschätzung und eine Umfrage mit Live-Balken.
+              plus eine kurze Pro/Contra-Einschätzung und eine Umfrage mit Live-Auswertung als Kreisdiagramm.
             </p>
             <div class="chiplist" aria-label="Themenchips">
               <span class="chip">Plattformen</span>
@@ -526,13 +582,12 @@
             </ul>
           </div>
 
-          <div class="imgbox" role="img" aria-label="Bildplatzhalter Grundlagen">
-            <div>
-              <div style="font-weight:800; letter-spacing:-0.02em; margin-bottom:6px;">Bild/Infografik (optional)</div>
-              <div style="font-size:13px; color:rgba(255,255,255,.65);">
-                Beispiel: “Analog → Digital → Datengetrieben” als kleines Schaubild
-              </div>
+          <div>
+            <div class="imgbox" role="img" aria-label="Was ist Digitalisierung (Bild)">
+              <img src="was_digi.jpg" alt="Was ist Digitalisierung?" loading="lazy"
+                   onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=&quot;padding:18px;color:rgba(255,255,255,.72)&quot;><strong>Bild fehlt:</strong><br/>Bitte <code>was_digi.jpg</code> in den Repo-Ordner legen.</div>';" />
             </div>
+            <div class="imgcap">Abbildung: Was ist Digitalisierung?</div>
           </div>
         </div>
       </section>
@@ -600,13 +655,12 @@
             </ul>
           </div>
 
-          <div class="imgbox" role="img" aria-label="Bildplatzhalter Alltag">
-            <div>
-              <div style="font-weight:800; letter-spacing:-0.02em; margin-bottom:6px;">Bildplatzhalter</div>
-              <div style="font-size:13px; color:rgba(255,255,255,.65);">
-                Optional: Foto von Self-Checkout / Banking-App / Einkaufs-App (eigene Bilder)
-              </div>
+          <div>
+            <div class="imgbox" role="img" aria-label="Wo findet Digitalisierung statt (Bild)">
+              <img src="wo_digi.jpg" alt="Wo findet Digitalisierung statt?" loading="lazy"
+                   onerror="this.style.display='none'; this.parentElement.innerHTML='<div style=&quot;padding:18px;color:rgba(255,255,255,.72)&quot;><strong>Bild fehlt:</strong><br/>Bitte <code>wo_digi.jpg</code> in den Repo-Ordner legen.</div>';" />
             </div>
+            <div class="imgcap">Abbildung: Wo findet Digitalisierung statt?</div>
           </div>
         </div>
 
@@ -676,9 +730,9 @@
           </div>
           <div class="imgbox" role="img" aria-label="Bildplatzhalter Projektteil">
             <div>
-              <div style="font-weight:800; letter-spacing:-0.02em; margin-bottom:6px;">Bildplatzhalter</div>
+              <div style="font-weight:800; letter-spacing:-0.02em; margin-bottom:6px;">Optionales Bild</div>
               <div style="font-size:13px; color:rgba(255,255,255,.65);">
-                Optional: euer Poster / Diagramm / Screenshot eines (anonymisierten) Umfrage-Ergebnisses
+                Hier könnt ihr später euer Poster / Diagramm / Screenshot einfügen.
               </div>
             </div>
           </div>
@@ -689,17 +743,16 @@
       <section class="card section" id="umfrage">
         <h2>Umfrage</h2>
         <p class="subtitle" style="margin-top:-2px;">
-          Kurzes Stimmungsbild: Wie wird sich die fortschreitende Digitalisierung der Märkte auf Konsumentinnen und Konsumenten auswirken?
+          Kurzes Stimmungsbild: Wie stehst du zur Digitalisierung?
         </p>
 
         <div class="callout">
           <strong>Frage:</strong><br/>
-          Denken Sie, dass die fortschreitende Digitalisierung der Märkte für den Konsumenten / die Konsumentin
-          sich vorteilhaft auswirken wird?
+          Stehen Sie der Digitalisierung positiv gegenüber?
         </div>
 
         <div class="cta-row" style="margin-top:14px;">
-          <a class="btn btn-primary" data-open-survey href="#">📋 Umfrage im Pop-up öffnen</a>
+          <a class="btn btn-primary" data-open-survey href="#">🗳️ Umfrage im Pop-up öffnen</a>
           <a class="btn btn-ghost" href="#chancenrisiken">↩ Erst Chancen & Risiken lesen</a>
         </div>
 
@@ -724,11 +777,10 @@
     <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="surveyTitle">
       <div class="modal-header">
         <div>
-          <div class="badge">📋 Umfrage</div>
-          <h3 id="surveyTitle" class="modal-title">Digitalisierung der Märkte</h3>
+          <div class="badge">🗳️ Umfrage</div>
+          <h3 id="surveyTitle" class="modal-title">Stehen Sie der Digitalisierung positiv gegenüber?</h3>
           <p class="modal-sub">
-            Denken Sie, dass die fortschreitende Digitalisierung der Märkte sich für den Konsumenten / die Konsumentin
-            vorteilhaft auswirken wird?
+            Bitte wählen Sie eine Antwort. Die Auswertung erscheint als Kreisdiagramm.
           </p>
         </div>
         <button class="icon-btn" id="closeSurvey" type="button" aria-label="Pop-up schließen">✕</button>
@@ -737,6 +789,7 @@
       <div class="modal-actions">
         <button class="btn btn-primary" id="voteYes" type="button">✅ Ja</button>
         <button class="btn" id="voteNo" type="button">❌ Nein</button>
+        <button class="btn" id="voteEgal" type="button">🤷 Egal</button>
         <button class="btn" id="resetVotes" type="button" title="Nur für Demo/Tests">↩ Reset</button>
       </div>
 
@@ -745,26 +798,41 @@
       <div>
         <h4 style="margin:0 0 10px; letter-spacing:-0.02em;">Ergebnis (dieses Gerät)</h4>
 
-        <div class="barrow">
-          <div class="barlabel">Ja</div>
-          <div class="bartrack">
-            <div class="barfill" id="barYes" style="width:0%"></div>
+        <div class="pie-wrap">
+          <div class="pie-card">
+            <canvas id="pieCanvas" width="260" height="260" aria-label="Kreisdiagramm Umfrage" role="img"></canvas>
           </div>
-          <div class="barvalue" id="valYes">0 (0%)</div>
-        </div>
 
-        <div class="barrow">
-          <div class="barlabel">Nein</div>
-          <div class="bartrack">
-            <div class="barfill" id="barNo" style="width:0%"></div>
+          <div class="legend" aria-label="Legende Umfrage">
+            <div class="legend-row">
+              <div class="legend-left">
+                <span class="swatch" id="swatchYes"></span>
+                <span class="legend-label">Ja</span>
+              </div>
+              <div class="legend-val" id="valYes">0 (0%)</div>
+            </div>
+            <div class="legend-row">
+              <div class="legend-left">
+                <span class="swatch" id="swatchNo"></span>
+                <span class="legend-label">Nein</span>
+              </div>
+              <div class="legend-val" id="valNo">0 (0%)</div>
+            </div>
+            <div class="legend-row">
+              <div class="legend-left">
+                <span class="swatch" id="swatchEgal"></span>
+                <span class="legend-label">Egal</span>
+              </div>
+              <div class="legend-val" id="valEgal">0 (0%)</div>
+            </div>
+
+            <div class="divider"></div>
+            <p class="mini" id="voteHint" style="margin:0;"></p>
+            <p class="mini" style="margin-top:6px;">
+              Für eine echte Gesamtauswertung (alle Geräte) später: Umfragetool-Link einbauen oder Backend nutzen.
+            </p>
           </div>
-          <div class="barvalue" id="valNo">0 (0%)</div>
         </div>
-
-        <p class="mini" id="voteHint" style="margin-top:10px;"></p>
-        <p class="mini" style="margin-top:6px;">
-          Für eine echte Gesamtauswertung (alle Geräte) später: Umfragetool-Link einbauen oder Backend nutzen.
-        </p>
       </div>
     </div>
   </div>
@@ -775,24 +843,42 @@
 
     // Alles erst verdrahten, wenn das DOM wirklich da ist
     window.addEventListener("DOMContentLoaded", () => {
-      // ====== Umfrage: lokal (LocalStorage) ======
       const modal = document.getElementById("surveyModal");
       const closeBtn = document.getElementById("closeSurvey");
 
-      const voteYesBtn = document.getElementById("voteYes");
-      const voteNoBtn  = document.getElementById("voteNo");
-      const resetBtn   = document.getElementById("resetVotes");
+      const voteYesBtn  = document.getElementById("voteYes");
+      const voteNoBtn   = document.getElementById("voteNo");
+      const voteEgalBtn = document.getElementById("voteEgal");
+      const resetBtn    = document.getElementById("resetVotes");
 
-      const barYes = document.getElementById("barYes");
-      const barNo  = document.getElementById("barNo");
-      const valYes = document.getElementById("valYes");
-      const valNo  = document.getElementById("valNo");
-      const hint   = document.getElementById("voteHint");
+      const hint = document.getElementById("voteHint");
+
+      const valYes  = document.getElementById("valYes");
+      const valNo   = document.getElementById("valNo");
+      const valEgal = document.getElementById("valEgal");
+
+      const swatchYes  = document.getElementById("swatchYes");
+      const swatchNo   = document.getElementById("swatchNo");
+      const swatchEgal = document.getElementById("swatchEgal");
+
+      const canvas = document.getElementById("pieCanvas");
+      const ctx = canvas.getContext("2d");
+
+      // Farben (für Pie & Legende) — bewusst klar unterscheidbar
+      const COLORS = {
+        yes:  "#22c55e", // grün
+        no:   "#ef4444", // rot
+        egal: "#a78bfa"  // violett
+      };
+      swatchYes.style.background = COLORS.yes;
+      swatchNo.style.background = COLORS.no;
+      swatchEgal.style.background = COLORS.egal;
 
       // Speicher-Keys
-      const KEY_YES  = "hgo_digitalisierung_votes_yes";
-      const KEY_NO   = "hgo_digitalisierung_votes_no";
-      const KEY_DONE = "hgo_digitalisierung_voted";
+      const KEY_YES  = "hgo_digi_votes_yes";
+      const KEY_NO   = "hgo_digi_votes_no";
+      const KEY_EGAL = "hgo_digi_votes_egal";
+      const KEY_DONE = "hgo_digi_voted";
 
       function getCount(key){
         const n = Number(localStorage.getItem(key) || "0");
@@ -805,8 +891,7 @@
       function openModal(){
         modal.setAttribute("aria-hidden", "false");
         document.body.style.overflow = "hidden";
-        renderBars();
-        // Fokus auf den ersten Button (besseres Mobile/Keyboard-Handling)
+        renderAll();
         voteYesBtn.focus({ preventScroll: true });
       }
       function closeModal(){
@@ -814,24 +899,115 @@
         document.body.style.overflow = "";
       }
 
-      function renderBars(){
+      function calc(){
         const yes = getCount(KEY_YES);
         const no  = getCount(KEY_NO);
-        const total = yes + no;
-
+        const eg  = getCount(KEY_EGAL);
+        const total = yes + no + eg;
         const pYes = total ? Math.round((yes / total) * 100) : 0;
         const pNo  = total ? Math.round((no  / total) * 100) : 0;
+        const pEg  = total ? Math.round((eg  / total) * 100) : 0;
+        return { yes, no, eg, total, pYes, pNo, pEg };
+      }
 
-        barYes.style.width = pYes + "%";
-        barNo.style.width  = pNo + "%";
+      function drawPie({ yes, no, eg, total }){
+        // High-DPI crisp
+        const cssSize = 260;
+        const dpr = window.devicePixelRatio || 1;
+        canvas.style.width = cssSize + "px";
+        canvas.style.height = cssSize + "px";
+        canvas.width = Math.floor(cssSize * dpr);
+        canvas.height = Math.floor(cssSize * dpr);
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
-        valYes.textContent = `${yes} (${pYes}%)`;
-        valNo.textContent  = `${no} (${pNo}%)`;
+        const cx = cssSize / 2;
+        const cy = cssSize / 2;
+        const r  = Math.min(cx, cy) - 12;
+
+        // Clear
+        ctx.clearRect(0, 0, cssSize, cssSize);
+
+        // Background ring
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(0,0,0,.20)";
+        ctx.fill();
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = "rgba(255,255,255,.12)";
+        ctx.stroke();
+
+        if (total === 0){
+          // Empty state
+          ctx.fillStyle = "rgba(255,255,255,.70)";
+          ctx.font = "700 13px ui-sans-serif, system-ui";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText("Noch keine Stimmen", cx, cy);
+          return;
+        }
+
+        const parts = [
+          { key: "yes", value: yes, color: COLORS.yes },
+          { key: "no", value: no, color: COLORS.no },
+          { key: "egal", value: eg, color: COLORS.egal },
+        ].filter(p => p.value > 0);
+
+        let start = -Math.PI / 2;
+
+        // Draw slices
+        parts.forEach(p => {
+          const angle = (p.value / total) * Math.PI * 2;
+          const end = start + angle;
+
+          ctx.beginPath();
+          ctx.moveTo(cx, cy);
+          ctx.arc(cx, cy, r, start, end);
+          ctx.closePath();
+          ctx.fillStyle = p.color;
+          ctx.fill();
+
+          // Slice border
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = "rgba(0,0,0,.25)";
+          ctx.stroke();
+
+          start = end;
+        });
+
+        // Inner cutout (donut look)
+        ctx.beginPath();
+        ctx.arc(cx, cy, r * 0.58, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(11,18,32,.85)";
+        ctx.fill();
+        ctx.lineWidth = 1;
+        ctx.strokeStyle = "rgba(255,255,255,.10)";
+        ctx.stroke();
+
+        // Center label
+        ctx.fillStyle = "rgba(255,255,255,.90)";
+        ctx.font = "800 18px ui-sans-serif, system-ui";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(String(total), cx, cy - 6);
+
+        ctx.fillStyle = "rgba(255,255,255,.65)";
+        ctx.font = "600 12px ui-sans-serif, system-ui";
+        ctx.fillText("Stimmen", cx, cy + 14);
+      }
+
+      function renderAll(){
+        const { yes, no, eg, total, pYes, pNo, pEg } = calc();
+
+        valYes.textContent  = `${yes} (${pYes}%)`;
+        valNo.textContent   = `${no} (${pNo}%)`;
+        valEgal.textContent = `${eg} (${pEg}%)`;
 
         const already = localStorage.getItem(KEY_DONE) === "1";
         hint.textContent = already
           ? "Danke! Stimme gespeichert (auf diesem Gerät)."
           : "Noch keine Stimme abgegeben (auf diesem Gerät).";
+
+        drawPie({ yes, no, eg, total });
       }
 
       function vote(which){
@@ -839,17 +1015,21 @@
           alert("Auf diesem Gerät wurde bereits abgestimmt.");
           return;
         }
-        if (which === "yes") setCount(KEY_YES, getCount(KEY_YES) + 1);
-        if (which === "no")  setCount(KEY_NO,  getCount(KEY_NO) + 1);
+
+        if (which === "yes")  setCount(KEY_YES,  getCount(KEY_YES) + 1);
+        if (which === "no")   setCount(KEY_NO,   getCount(KEY_NO) + 1);
+        if (which === "egal") setCount(KEY_EGAL, getCount(KEY_EGAL) + 1);
+
         localStorage.setItem(KEY_DONE, "1");
-        renderBars();
+        renderAll();
       }
 
       function resetVotes(){
         localStorage.removeItem(KEY_YES);
         localStorage.removeItem(KEY_NO);
+        localStorage.removeItem(KEY_EGAL);
         localStorage.removeItem(KEY_DONE);
-        renderBars();
+        renderAll();
       }
 
       // Öffnen: alle Elemente mit data-open-survey
@@ -876,11 +1056,18 @@
       // Voting
       voteYesBtn.addEventListener("click", () => vote("yes"));
       voteNoBtn.addEventListener("click",  () => vote("no"));
+      voteEgalBtn.addEventListener("click",() => vote("egal"));
       resetBtn.addEventListener("click", resetVotes);
 
+      // Re-draw on resize (for DPR changes / orientation)
+      window.addEventListener("resize", () => {
+        if (modal.getAttribute("aria-hidden") === "false") renderAll();
+      });
+
       // initial
-      renderBars();
+      renderAll();
     });
   </script>
 </body>
 </html>
+
