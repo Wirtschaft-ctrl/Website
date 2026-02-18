@@ -527,7 +527,7 @@
           </div>
 
           <p class="mini" style="margin-top:12px;">
-            Hinweis: Die Umfrage speichert Stimmen lokal im Browser (für eine Demo). Für eine Klassen-Statistik über alle Geräte bräuchte man später ein Umfragetool/Backend.
+            Hinweis: Die Umfrage zählt Stimmen lokal auf diesem Gerät (Demo). Mehrfaches Abstimmen ist möglich. Für eine Klassen-Statistik über alle Geräte bräuchte man ein Online-Backend.
           </p>
         </div>
 
@@ -549,7 +549,7 @@
             </div>
           </div>
           <p class="mini">
-            Später werden hier auch Quellen, Zitate oder Ergebnisse aus dem Unterricht/Projekt ergänzen.
+            Tipp: Ihr könnt später hier auch Quellen, Zitate oder Ergebnisse aus eurem Unterricht/Projekt ergänzen.
           </p>
         </aside>
       </div>
@@ -719,12 +719,12 @@
         <div class="split">
           <div class="callout">
             <strong>Platzhalter:</strong><br/>
-            Hier werden eigene Inhalte ergänzt:
+            Hier könnt ihr eure eigenen Inhalte ergänzen:
             <ul>
               <li>Ergebnisse aus dem Unterricht / aus Gruppenarbeit</li>
               <li>Mini-Interviews (z. B. “Wie nutzen Eltern/Schüler Apps beim Einkauf?”)</li>
               <li>Beobachtungen: “Was hat sich im Supermarkt verändert?”</li>
-              <li>Eigene Beispiele oder Screenshots</li>
+              <li>Eigene Beispiele oder Screenshots (ohne private Daten!)</li>
               <li>Quellenliste (Links/Artikel/Schulmaterial)</li>
             </ul>
           </div>
@@ -732,7 +732,7 @@
             <div>
               <div style="font-weight:800; letter-spacing:-0.02em; margin-bottom:6px;">Optionales Bild</div>
               <div style="font-size:13px; color:rgba(255,255,255,.65);">
-                Hier kommen später weitere Bilder hinein.
+                Hier könnt ihr später euer Poster / Diagramm / Screenshot einfügen.
               </div>
             </div>
           </div>
@@ -748,7 +748,7 @@
 
         <div class="callout">
           <strong>Frage:</strong><br/>
-          Stehst du der Digitalisierung positiv gegenüber?
+          Stehen Sie der Digitalisierung positiv gegenüber?
         </div>
 
         <div class="cta-row" style="margin-top:14px;">
@@ -757,7 +757,7 @@
         </div>
 
         <p class="mini" style="margin-top:10px;">
-          Hinweis: Dieses Ergebnis ist als Demo lokal (pro Gerät). Für eine gemeinsame Klassen-Statistik bräuchte man später ein Online-Umfragetool.
+          Hinweis: Dieses Ergebnis wird lokal auf diesem Gerät gezählt. Mehrfaches Abstimmen ist möglich (Demo). Für eine gemeinsame Klassen-Statistik über alle Geräte bräuchte man ein Online-Backend.
         </p>
       </section>
     </main>
@@ -778,9 +778,9 @@
       <div class="modal-header">
         <div>
           <div class="badge">🗳️ Umfrage</div>
-          <h3 id="surveyTitle" class="modal-title">Stehst du der Digitalisierung positiv gegenüber?</h3>
+          <h3 id="surveyTitle" class="modal-title">Stehen Sie der Digitalisierung positiv gegenüber?</h3>
           <p class="modal-sub">
-            Bitte wähle eine Antwort. Die Auswertung erscheint als Kreisdiagramm (Demo) .
+            Bitte wählen Sie eine Antwort. Du kannst hier mehrfach abstimmen – die Auswertung aktualisiert sich sofort als Kreisdiagramm.
           </p>
         </div>
         <button class="icon-btn" id="closeSurvey" type="button" aria-label="Pop-up schließen">✕</button>
@@ -829,7 +829,7 @@
             <div class="divider"></div>
             <p class="mini" id="voteHint" style="margin:0;"></p>
             <p class="mini" style="margin-top:6px;">
-              Für eine echte Gesamtauswertung (alle Geräte) später: Umfragetool-Link einbauen oder Backend nutzen.
+              Reset setzt nur die lokalen Zähler dieses Geräts zurück.
             </p>
           </div>
         </div>
@@ -841,7 +841,6 @@
     // Footer-Jahr
     document.getElementById("year").textContent = new Date().getFullYear();
 
-    // Alles erst verdrahten, wenn das DOM wirklich da ist
     window.addEventListener("DOMContentLoaded", () => {
       const modal = document.getElementById("surveyModal");
       const closeBtn = document.getElementById("closeSurvey");
@@ -864,7 +863,7 @@
       const canvas = document.getElementById("pieCanvas");
       const ctx = canvas.getContext("2d");
 
-      // Farben (für Pie & Legende) — bewusst klar unterscheidbar
+      // Farben
       const COLORS = {
         yes:  "#22c55e", // grün
         no:   "#ef4444", // rot
@@ -874,11 +873,10 @@
       swatchNo.style.background = COLORS.no;
       swatchEgal.style.background = COLORS.egal;
 
-      // Speicher-Keys
+      // Speicher-Keys (lokal, pro Gerät)
       const KEY_YES  = "hgo_digi_votes_yes";
       const KEY_NO   = "hgo_digi_votes_no";
       const KEY_EGAL = "hgo_digi_votes_egal";
-      const KEY_DONE = "hgo_digi_voted";
 
       function getCount(key){
         const n = Number(localStorage.getItem(key) || "0");
@@ -911,7 +909,6 @@
       }
 
       function drawPie({ yes, no, eg, total }){
-        // High-DPI crisp
         const cssSize = 260;
         const dpr = window.devicePixelRatio || 1;
         canvas.style.width = cssSize + "px";
@@ -924,10 +921,9 @@
         const cy = cssSize / 2;
         const r  = Math.min(cx, cy) - 12;
 
-        // Clear
         ctx.clearRect(0, 0, cssSize, cssSize);
 
-        // Background ring
+        // Base
         ctx.beginPath();
         ctx.arc(cx, cy, r, 0, Math.PI * 2);
         ctx.fillStyle = "rgba(0,0,0,.20)";
@@ -937,7 +933,6 @@
         ctx.stroke();
 
         if (total === 0){
-          // Empty state
           ctx.fillStyle = "rgba(255,255,255,.70)";
           ctx.font = "700 13px ui-sans-serif, system-ui";
           ctx.textAlign = "center";
@@ -947,14 +942,12 @@
         }
 
         const parts = [
-          { key: "yes", value: yes, color: COLORS.yes },
-          { key: "no", value: no, color: COLORS.no },
-          { key: "egal", value: eg, color: COLORS.egal },
+          { value: yes, color: COLORS.yes },
+          { value: no,  color: COLORS.no },
+          { value: eg,  color: COLORS.egal },
         ].filter(p => p.value > 0);
 
         let start = -Math.PI / 2;
-
-        // Draw slices
         parts.forEach(p => {
           const angle = (p.value / total) * Math.PI * 2;
           const end = start + angle;
@@ -966,7 +959,6 @@
           ctx.fillStyle = p.color;
           ctx.fill();
 
-          // Slice border
           ctx.lineWidth = 2;
           ctx.strokeStyle = "rgba(0,0,0,.25)";
           ctx.stroke();
@@ -974,7 +966,7 @@
           start = end;
         });
 
-        // Inner cutout (donut look)
+        // Donut cutout
         ctx.beginPath();
         ctx.arc(cx, cy, r * 0.58, 0, Math.PI * 2);
         ctx.fillStyle = "rgba(11,18,32,.85)";
@@ -997,30 +989,18 @@
 
       function renderAll(){
         const { yes, no, eg, total, pYes, pNo, pEg } = calc();
-
         valYes.textContent  = `${yes} (${pYes}%)`;
         valNo.textContent   = `${no} (${pNo}%)`;
         valEgal.textContent = `${eg} (${pEg}%)`;
-
-        const already = localStorage.getItem(KEY_DONE) === "1";
-        hint.textContent = already
-          ? "Danke! Stimme gespeichert (auf diesem Gerät)."
-          : "Noch keine Stimme abgegeben (auf diesem Gerät).";
-
+        hint.textContent = "Mehrfaches Abstimmen ist möglich: jeder Klick erhöht die Summe auf diesem Gerät.";
         drawPie({ yes, no, eg, total });
       }
 
       function vote(which){
-        if (localStorage.getItem(KEY_DONE) === "1"){
-          alert("Auf diesem Gerät wurde bereits abgestimmt.");
-          return;
-        }
-
+        // KEINE Einmal-Sperre: Aufsummieren ist ausdrücklich erlaubt
         if (which === "yes")  setCount(KEY_YES,  getCount(KEY_YES) + 1);
         if (which === "no")   setCount(KEY_NO,   getCount(KEY_NO) + 1);
         if (which === "egal") setCount(KEY_EGAL, getCount(KEY_EGAL) + 1);
-
-        localStorage.setItem(KEY_DONE, "1");
         renderAll();
       }
 
@@ -1028,11 +1008,10 @@
         localStorage.removeItem(KEY_YES);
         localStorage.removeItem(KEY_NO);
         localStorage.removeItem(KEY_EGAL);
-        localStorage.removeItem(KEY_DONE);
         renderAll();
       }
 
-      // Öffnen: alle Elemente mit data-open-survey
+      // Öffnen
       document.querySelectorAll("[data-open-survey]").forEach((el) => {
         el.addEventListener("click", (e) => {
           e.preventDefault();
@@ -1042,13 +1021,9 @@
 
       // Schließen
       closeBtn.addEventListener("click", closeModal);
-
-      // Klick auf Hintergrund schließt
       modal.addEventListener("click", (e) => {
         if (e.target && e.target.dataset && e.target.dataset.close === "true") closeModal();
       });
-
-      // ESC schließt
       document.addEventListener("keydown", (e) => {
         if (e.key === "Escape" && modal.getAttribute("aria-hidden") === "false") closeModal();
       });
@@ -1059,7 +1034,7 @@
       voteEgalBtn.addEventListener("click",() => vote("egal"));
       resetBtn.addEventListener("click", resetVotes);
 
-      // Re-draw on resize (for DPR changes / orientation)
+      // Re-draw on resize
       window.addEventListener("resize", () => {
         if (modal.getAttribute("aria-hidden") === "false") renderAll();
       });
@@ -1070,4 +1045,5 @@
   </script>
 </body>
 </html>
+
 
